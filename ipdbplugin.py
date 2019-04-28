@@ -10,7 +10,7 @@ import traceback
 from nose.plugins.base import Plugin
 import unittest
 
-from ipydex import IPS, TBPrinter
+import ipydex
 
 log = logging.getLogger("nose.plugins.ipdbplugin")
 
@@ -78,38 +78,37 @@ class iPdb(Plugin):
         # value was being passed as a string.
         if isinstance(ev, str):
             ev = ec(ev)
+
         stdout = sys.stdout
         sys.stdout = sys.__stdout__
         frame, upcount = get_relevant_frame(tb)
-        TBPrinter(ec, ev, tb).print(end_offset=upcount)
 
         # TODO: make this try ... clause more precise or drop it
         try:
-            debugger = get_debugger(ips)
-            debugger(frame, tb)
+            if ips:
+                ipydex.ips_excepthook(ec, ev, tb, frame_upcount=upcount)
+            else:
+                ipydex.TBPrinter(ec, ev, tb).print(end_offset=upcount)
+                debugger = get_debugger()
+                debugger(frame, tb)
         finally:
             sys.stdout = stdout
 
 
-def get_debugger(ips):
+def get_debugger():
     import IPython
+    from IPython.terminal.ipapp import TerminalIPythonApp
 
-    if ips:
-        from ipydex import ip_shell_after_exception
+    app = TerminalIPythonApp.instance()
+    app.initialize(argv=['--no-banner'])
+    try:
+        # ipython >= 5.0
+        p = IPython.terminal.debugger.TerminalPdb(app.shell.colors)
+    except AttributeError:
+        p = IPython.core.debugger.Pdb(app.shell.colors)
 
-        return ip_shell_after_exception
-    else:
-        from IPython.terminal.ipapp import TerminalIPythonApp
-        app = TerminalIPythonApp.instance()
-        app.initialize(argv=['--no-banner'])
-        try:
-            # ipython >= 5.0
-            p = IPython.terminal.debugger.TerminalPdb(app.shell.colors)
-        except AttributeError:
-            p = IPython.core.debugger.Pdb(app.shell.colors)
-
-        p.reset()
-        return p.interaction
+    p.reset()
+    return p.interaction
 
 
 def get_relevant_frame(tb):
@@ -133,5 +132,7 @@ def get_relevant_frame(tb):
         frame, filename, line, func_name, ctx, idx = fi
         if not filename == inspect.getabsfile(unittest.TestCase):
             break
+    else:
+        frame, upcount = None, 0
 
     return frame, upcount
