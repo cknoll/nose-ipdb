@@ -2,9 +2,21 @@ What about running nose with a smarter interactive debugger?
 
 Use this and *never* risk yourself forgetting `import ipdb; ipdb.set_trace()` in your code again!
 
-This plugin is 99.99% based on nose's [builtin debug plugin][1].
+This plugin serves to launch ipdb or ipydex.IPS (i.e. embedded IPython shell) after an test failure or error. 
 
-If you have any ideas about how to improve it, come and fork the code at http://github.com/flavioamieiro/nose-ipdb
+This plugin is about 95% based on nose's builtin [builtin debug plugin][1].
+
+
+Change Note
+-----------
+The present version is a fork of <http://github.com/flavioamieiro/nose-ipdb>.
+It has several improvements:
+
+- Possibility to launch IPython shell instead of debugger
+- Pretty formated Traceback
+- Better comaptibility with unittest-package (select meaningful frame to launch ipdb/ips inside)
+
+Feal free to open an issue or send feedback to `"Carsten.+".replace('+', 'Knoll@') + "tu-dresden.de"`  
 
 Install
 --------
@@ -21,6 +33,10 @@ To drop into ipdb on errors:
 To drop into ipdb on failures:
 
     nosetests --ipdb-failures
+
+**New in this fork:** Drop into IPython embedded shell on failures or errors:
+
+    nosetests --ips
 
 License
 --------
