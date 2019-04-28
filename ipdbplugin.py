@@ -10,7 +10,7 @@ import traceback
 from nose.plugins.base import Plugin
 import unittest
 
-from ipydex import IPS
+from ipydex import IPS, TBPrinter
 
 log = logging.getLogger("nose.plugins.ipdbplugin")
 
@@ -80,14 +80,12 @@ class iPdb(Plugin):
             ev = ec(ev)
         stdout = sys.stdout
         sys.stdout = sys.__stdout__
-        sys.stderr.write('\n- TRACEBACK --------------------------------------------------------------------\n')
-        traceback.print_exception(ec, ev, tb)
-        sys.stderr.write('--------------------------------------------------------------------------------\n')
+        frame, upcount = get_relevant_frame(tb)
+        TBPrinter(ec, ev, tb).print(end_offset=upcount)
+
+        # TODO: make this try ... clause more precise or drop it
         try:
-
             debugger = get_debugger(ips)
-
-            frame = get_relevant_frame(tb)
             debugger(frame, tb)
         finally:
             sys.stdout = stdout
@@ -122,7 +120,7 @@ def get_relevant_frame(tb):
     the caller frame is the actual testcase.
 
     :param tb:
-    :return:
+    :return:  frame, upcount
     """
 
     # inspect.getinnerframes() returns a list of frames information
@@ -131,9 +129,9 @@ def get_relevant_frame(tb):
 
     frame_info_list = inspect.getinnerframes(tb)
     frame_info_list.reverse()
-    for fi in frame_info_list:
+    for upcount, fi in enumerate(frame_info_list):
         frame, filename, line, func_name, ctx, idx = fi
         if not filename == inspect.getabsfile(unittest.TestCase):
             break
 
-    return frame
+    return frame, upcount
