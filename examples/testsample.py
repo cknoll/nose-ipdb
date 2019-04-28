@@ -4,6 +4,17 @@ import unittest
 """
 This module contains some test with errors and failures.
 Every testcase contains some local variables to be able to check that the debugger awakes in the correct namespace.
+
+
+# call options
+nosetests --ipdb
+nosetests --ipdb-failures
+nosetests --ips
+
+# one specific test
+nosetests --ips testsample:TestsCases1.test_case1
+ 
+
 """
 
 
@@ -31,9 +42,6 @@ def test_failure_with_print():
 def test_failure_with_local_variable():
     local_variable = 'foo'
     assert local_variable == 'bar', "This is a failure with a local variable in scope"
-
-
-# nosetests --rednose --ipdb-failures
 
 
 class TestsCases1(unittest.TestCase):

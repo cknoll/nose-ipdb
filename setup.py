@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='ipdbplugin',
-    version='1.5.0',
+    version='1.6.0',
     url='http://github.com/flavioamieiro/nose-ipdb/tree/master',
     maintainer='Flavio Amieiro',
     maintainer_email='amieiro.flavio@gmail.com',
@@ -14,13 +14,15 @@ setup(
         """What about running nose with a smarter interactive debugger?
 
         Use this and *never* risk yourself forgetting `import ipdb; ipdb.set_trace()` in your code again!
+        
+        This plugin serves to launch ipdb or ipydex.IPS (i.e. embedded IPython shell) after an test failure or error. 
 
-        This plugin is 99.99% based on nose's builtin debug plugin.
+        This plugin is about 95% based on nose's builtin debug plugin.
 
         If you have any ideas about how to improve it, come and fork the code at http://github.com/flavioamieiro/nose-ipdb
         """
     ),
-    install_requires=['nose', 'ipython>=1.0'],
+    install_requires=['nose', 'ipython>=1.0', 'ipydex>=0.7'],
     license='GNU LGPL',
     keywords='test unittest nose nosetests plugin debug ipdb ipython',
     py_modules=['ipdbplugin'],
