@@ -88,7 +88,7 @@ class iPdb(Plugin):
             if ips:
                 ipydex.ips_excepthook(ec, ev, tb, frame_upcount=upcount)
             else:
-                ipydex.TBPrinter(ec, ev, tb).print(end_offset=upcount)
+                ipydex.TBPrinter(ec, ev, tb).printout(end_offset=upcount)
                 debugger = get_debugger()
                 debugger(frame, tb)
         finally:
