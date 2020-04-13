@@ -77,7 +77,10 @@ class iPdb(Plugin):
         # This is to work around issue #16, that occured when the exception
         # value was being passed as a string.
         if isinstance(ev, str):
-            ev = ec(ev)
+            try:
+                ev = ec(ev)
+            except TypeError:
+                pass
 
         stdout = sys.stdout
         sys.stdout = sys.__stdout__
