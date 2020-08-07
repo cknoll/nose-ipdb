@@ -3,6 +3,8 @@
 from setuptools import setup
 
 
+# note this file contains the metadata from the original project (not the fork by user cknoll)
+
 setup(
     name='ipdbplugin',
     version='1.6.0',
